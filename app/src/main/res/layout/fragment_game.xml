@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.GameFragment">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/gamescreenback"
+        android:scaleType="centerCrop"/>
+
+    <FrameLayout
+        android:layout_width="126.34dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="6.78dp"
+        android:layout_marginStart="273dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/score_main"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="25"
+            android:textSize="48sp"
+            android:shadowColor="#286779"
+            android:shadowDx="0"
+            android:shadowDy="10"
+            android:shadowRadius="1"
+            android:textAlignment="center"
+            android:textFontWeight="400"
+            android:textColor="#FFFFFF"
+        android:lineHeight="55.73dp" />
+    </FrameLayout>
+
+
+</FrameLayout>

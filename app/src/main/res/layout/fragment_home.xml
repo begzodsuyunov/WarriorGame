@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.HomeFragment">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/mainpage" />
+
+    <TextView
+        android:layout_width="157dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="180dp"
+        android:layout_marginTop="10dp"
+        android:lineHeight="55.73px"
+        android:text="@string/settings"
+        android:textFontWeight="400"
+        android:textSize="48sp"
+        android:shadowColor="#286779"
+        android:shadowDx="0"
+        android:shadowDy="10"
+        android:shadowRadius="1"/>
+
+    <TextView
+        android:id="@+id/gameText"
+        android:layout_width="210dp"
+        android:layout_height="93dp"
+        android:layout_marginStart="141dp"
+        android:layout_marginTop="150dp"
+        android:lineHeight="111.46px"
+        android:shadowColor="#286779"
+        android:shadowDx="0"
+        android:shadowDy="10"
+        android:shadowRadius="1"
+        android:text="@string/game"
+        android:textFontWeight="400"
+        android:textSize="96sp" />
+
+</FrameLayout>
