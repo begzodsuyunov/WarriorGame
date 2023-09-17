@@ -68,6 +68,7 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
 
     private fun update() {
         // Update the x positions of both backgrounds
+        sword.update()
 
 
         // Check if background1 has reached the end of the screen
@@ -80,14 +81,18 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
             background2.x = background1.x + background1.background.width
         }
 
-        if (sword.isGoingUp) {
+        if (sword.isForward) {
             background1.x -= (5 * screenRatioX!!).toInt()
             background2.x -= (5 * screenRatioX!!).toInt()
             sword.x += (3 * screenRatioX!!).toInt()
+        } else {
+//            sword.x -= (10 * screenRatioX!!).toInt()
         }
-
-        else
-            sword.x -= (10 * screenRatioX!!).toInt()
+//        if (sword.isJump) {
+//            sword.y -= (23 * screenRatioY!!).toInt()
+//        } else {
+//            sword.y += (10 * screenRatioY!!).toInt()
+//        }
 
         if (sword.x < 0)
             sword.x = 0
@@ -173,12 +178,17 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (event != null) {
             when (event.action) {
-                MotionEvent.ACTION_DOWN -> if (event.x < screenX / 2) {
-                    sword.isGoingUp = true
+                MotionEvent.ACTION_DOWN -> {
+                    if (event.y > 3 * screenY / 4) {
+                        sword.isForward = true
+                    } else {
+                        sword.jump()
+
+                    }
                 }
 
                 MotionEvent.ACTION_UP -> {
-                    sword.isGoingUp = false
+                    sword.isForward = false
                     //                if (event.x > screenX / 2) {
                     //                    sword.toShoot++
                     //                }

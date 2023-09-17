@@ -6,8 +6,10 @@ import android.graphics.BitmapFactory
 import com.estgame.warriorroad.GameView.Companion.screenRatioX
 import com.estgame.warriorroad.GameView.Companion.screenRatioY
 
-class Sword (screenY: Int, res: Resources) {
-    var isGoingUp: Boolean = false
+class Sword (private val screenY: Int, res: Resources) {
+    var isForward: Boolean = false
+    var isJumping: Boolean = false
+    private var velocity: Int = 0
     var x = 0
     var y = 0
     var sword: Bitmap
@@ -32,6 +34,25 @@ class Sword (screenY: Int, res: Resources) {
         x = (2 * screenRatioX!!).toInt()
         y = screenY - height - (1000 * screenRatioY!!).toInt() // Adjust the value (50) as needed
     }
+    fun jump() {
+        if (!isJumping) {
+            isJumping = true
+            velocity = -50  // Apply an upward velocity when jumping
+        }
+    }
 
+    fun update() {
+        if (isJumping) {
+            // Apply the velocity to move the sword upwards
+            y += velocity
+            // Apply gravity to bring the sword back down
+            velocity += 2  // You can adjust the gravity strength as needed
+            // Check if the sword has landed
+            if (y >= screenY - height - (1000 * screenRatioY!!).toInt()) {
+                y = screenY - height - (1000 * screenRatioY!!).toInt() // Adjust the value (50) as needed
+                isJumping = false
+            }
+        }
+    }
 
 }
