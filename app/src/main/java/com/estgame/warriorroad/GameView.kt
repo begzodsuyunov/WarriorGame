@@ -9,6 +9,7 @@ import android.media.AudioManager
 import android.media.SoundPool
 import android.os.Build
 import android.provider.SyncStateContract.Helpers.update
+import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 
@@ -20,8 +21,13 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
     private var screenX = screenX
     private var screenY = screenY
     private lateinit var paint: Paint
-    private var screenRatioX: Float? = null
-    private var screenRatioY: Float? = null
+    private var sword: Sword
+
+    companion object {
+        var screenRatioY: Float? = null
+        var screenRatioX: Float? = null
+
+    }
 
     init {
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -39,7 +45,10 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
         screenRatioX = 1920f / screenX
         screenRatioY = 1080f / screenY
         background2.x = screenX * 2 // Set the initial x position of background2
+        sword = Sword(screenY, resources)
+
         paint = Paint()
+
 //        paint.textSize = 128f
 //        paint.color = Color.WHITE
 //        birds = Array(4) { Bird(resources) }
@@ -47,9 +56,10 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
 //            birds[i] = Bird(resources)
 //        }
     }
+
     override fun run() {
 
-        while(isPlaying){
+        while (isPlaying) {
             update()
             draw()
             sleep()
@@ -58,8 +68,7 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
 
     private fun update() {
         // Update the x positions of both backgrounds
-        background1.x -= (5 * screenRatioX!!).toInt()
-        background2.x -= (5 * screenRatioX!!).toInt()
+
 
         // Check if background1 has reached the end of the screen
         if (background1.x + background1.background.width < 0) {
@@ -70,14 +79,48 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
         if (background2.x + background2.background.width < 0) {
             background2.x = background1.x + background1.background.width
         }
+
+        if (sword.isGoingUp) {
+            background1.x -= (5 * screenRatioX!!).toInt()
+            background2.x -= (5 * screenRatioX!!).toInt()
+            sword.x += (3 * screenRatioX!!).toInt()
+        }
+
+        else
+            sword.x -= (10 * screenRatioX!!).toInt()
+
+        if (sword.x < 0)
+            sword.x = 0
+        if (sword.x > screenX - sword.width)
+            sword.x = screenX - sword.width
     }
 
 
-    private fun draw(){
+    private fun draw() {
         if (holder.surface.isValid) {
             val canvas = holder.lockCanvas()
-            canvas.drawBitmap(background1.background, null, Rect(background1.x, background1.y, background1.x + background1.background.width, background1.y + background1.background.height), paint)
-            canvas.drawBitmap(background2.background, null, Rect(background2.x, background2.y, background2.x + background2.background.width, background2.y + background2.background.height), paint)
+            canvas.drawBitmap(
+                background1.background,
+                null,
+                Rect(
+                    background1.x,
+                    background1.y,
+                    background1.x + background1.background.width,
+                    background1.y + background1.background.height
+                ),
+                paint
+            )
+            canvas.drawBitmap(
+                background2.background,
+                null,
+                Rect(
+                    background2.x,
+                    background2.y,
+                    background2.x + background2.background.width,
+                    background2.y + background2.background.height
+                ),
+                paint
+            )
 
 //            for (bird in birds) {
 //                canvas.drawBitmap(bird.getBird(), bird.x, bird.y, paint)
@@ -91,7 +134,8 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
 //                waitBeforeExiting()
 //                return
 //            }
-//            canvas.drawBitmap(flight.getFlight(), flight.x, flight.y, paint)
+            canvas.drawBitmap(sword.sword, sword.x.toFloat(), sword.y.toFloat(), paint)
+
 //            for (bullet in bullets) {
 //                canvas.drawBitmap(bullet.bullet, bullet.x, bullet.y, paint)
 //            }
@@ -99,7 +143,8 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
         }
 
     }
-    private fun sleep(){
+
+    private fun sleep() {
         try {
             Thread.sleep(17)
 
@@ -107,7 +152,8 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
             println(e)
         }
     }
-    fun resume(){
+
+    fun resume() {
         try {
             isPlaying = true
             thread = Thread(this)
@@ -119,9 +165,28 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
 
     }
 
-    fun pause(){
+    fun pause() {
         isPlaying = false
         thread?.join()
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        if (event != null) {
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> if (event.x < screenX / 2) {
+                    sword.isGoingUp = true
+                }
+
+                MotionEvent.ACTION_UP -> {
+                    sword.isGoingUp = false
+                    //                if (event.x > screenX / 2) {
+                    //                    sword.toShoot++
+                    //                }
+                }
+            }
+        }
+        return true
+
     }
 
 }
