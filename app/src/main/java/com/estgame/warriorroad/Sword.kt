@@ -3,6 +3,7 @@ package com.estgame.warriorroad
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Rect
 import com.estgame.warriorroad.GameView.Companion.screenRatioX
 import com.estgame.warriorroad.GameView.Companion.screenRatioY
 
@@ -25,14 +26,15 @@ class Sword (private val screenY: Int, res: Resources) {
 
         screenRatioX?.let { ratioX ->
             screenRatioY?.let { ratioY ->
-                width = (width * ratioX / (1.5)).toInt()
-                height = (height * ratioY * (2.5)).toInt()
+                width = (width * ratioX / (2)).toInt()
+                height = (height * ratioY * (2)).toInt()
             }
         }
         sword = Bitmap.createScaledBitmap(sword, width, height, false)
 
         x = (2 * screenRatioX!!).toInt()
         y = screenY - height - (1000 * screenRatioY!!).toInt() // Adjust the value (50) as needed
+
     }
     fun jump() {
         if (!isJumping) {
@@ -53,6 +55,9 @@ class Sword (private val screenY: Int, res: Resources) {
                 isJumping = false
             }
         }
+    }
+    fun getCollisionShape(): Rect {
+        return Rect(x, y, x + width, y + height)
     }
 
 }
