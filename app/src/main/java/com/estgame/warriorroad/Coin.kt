@@ -5,13 +5,13 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Rect
 
-class Coin(res: Resources) {
+class Coin(private val xPosition: Int, screenY: Int, res: Resources) {
 
-    var x = 0
+    var x = xPosition
     var y = 0
     var coin: Bitmap
-    internal var width = 0
-    internal var height = 0
+    var width = 0
+    var height = 0
 
 
     init {
@@ -27,11 +27,12 @@ class Coin(res: Resources) {
             }
         }
         coin = Bitmap.createScaledBitmap(coin, width, height, false)
-
+        y = screenY - height // Set the y position to the bottom of the screen
     }
 
     fun getCollisionShape(): Rect {
         return Rect(x, y, x + width, y + height)
+
     }
 
 }

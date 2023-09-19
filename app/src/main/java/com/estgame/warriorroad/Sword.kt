@@ -39,7 +39,7 @@ class Sword (private val screenY: Int, res: Resources) {
     fun jump() {
         if (!isJumping) {
             isJumping = true
-            velocity = -50  // Apply an upward velocity when jumping
+            velocity = -70  // Apply an upward velocity when jumping
         }
     }
 

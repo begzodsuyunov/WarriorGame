@@ -10,13 +10,16 @@ import android.media.SoundPool
 import android.os.Build
 import android.provider.SyncStateContract.Helpers.update
 import android.telephony.BarringInfo
+import android.util.Half.toFloat
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import android.widget.Toast
 import java.util.Random
 
 class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(context), Runnable {
     private var isPlaying: Boolean = false
+    private var isGameOver: Boolean = false
     private var thread: Thread? = null;
     private val background1 = Background(screenX, screenY, resources)
     private val background2 = Background(screenX, screenY, resources)
@@ -24,7 +27,8 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
     private var screenY = screenY
     private var paint: Paint
     private var sword: Sword
-    private var coin: Coin
+//    private var coin: Coin
+
 
     //    private var barrier: Barrier? = null
     private val barriers = ArrayList<Barrier>()
@@ -32,6 +36,11 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
     private var barrier2: Barrier? = null
     private var barrier3: Barrier? = null
     private var barrier4: Barrier? = null
+
+    private var coin1: Coin? = null
+    private var coin2: Coin? = null
+    private var coin3: Coin? = null
+    private var coin4: Coin? = null
 
     private val coins = ArrayList<Coin>()
 
@@ -64,20 +73,31 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
         barrier3 = Barrier(screenX / 2, screenY - sword.height * 2, resources)
         barrier4 = Barrier(screenX * 2 / 3, screenY - sword.height * 2, resources)
 
-        coin = Coin(resources)
-        coin.x = (screenX / 2 - coin.width / 2) // Center the coin horizontally
-        coin.y = barrier2!!.y - coin.height - 20 // Place the coin just above barrier2
-        coins.add(coin)
+        coin1 = Coin(screenX / 6, screenY - sword.height * 2, resources)
+        coin2 = Coin(screenX / 3, screenY - sword.height * 2, resources)
+        coin3 = Coin(screenX / 2, screenY - sword.height * 2, resources)
+        coin4 = Coin(screenX * 2 / 3, screenY - sword.height * 2, resources)
+
+        coins.add(coin1!!)
+        coins.add(coin2!!)
+        coins.add(coin3!!)
+        coins.add(coin4!!)
+//        coin = Coin(resources)
+////        coin.x = (screenX / 2 - coin.width / 2) // Center the coin horizontally
+////        coin.y = barrier2!!.y - coin.height - 20 // Place the coin just above barrier2
+//        coins.add(coin)
         paint = Paint()
         val coinSpacing = 50 // Adjust the vertical spacing between each coin
         val coinYOffset = -20 // Offset to place the coin just above the barrier
 
-        for (barrier in listOf(barrier1, barrier2, barrier3, barrier4)) {
-            val coinX = barrier!!.x + (barrier.width / 2) - (coin.width / 2) // Center the coin horizontally on the barrier
-            val coinY = barrier.y + coinYOffset // Place the coin just above the barrier
-            coin.x = coinX
-            coin.y = coinY
-        }
+//        for (barrier in listOf(barrier1, barrier2, barrier3, barrier4)) {
+//            val coinX = barrier!!.x + (barrier.width / 2) - (coin.width / 2)
+//            val coinY = barrier.y - coin.height - 40 // Place the coin just above the barrier
+//            val newCoin = Coin(resources)
+//            newCoin.x = coinX
+//            newCoin.y = coinY
+//            coins.add(newCoin)
+//        }
 
 //        paint.textSize = 128f
 //        paint.color = Color.WHITE
@@ -131,41 +151,95 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
         barrier4!!.x = background2.x + (screenX + 400)
         barrier4!!.y = screenY - (sword.height * 2.3).toInt()  // Adjust the y-coordinate as needed
         // Check for collisions between sword and barriers and adjust position
-        val swordRect = sword.getCollisionShape()
+        coin1!!.x = background1.x + (screenX / 3.5).toInt() + 40
+        coin1!!.y = screenY - (sword.height * 3).toInt()    // Adjust the y-coordinate as needed
+        coin2!!.x = background1.x + (screenX * 1.55).toInt()
+        coin2!!.y = screenY - (sword.height * 4.1).toInt()   // Adjust the y-coordinate as needed
+        coin3!!.x = background2.x + (screenX *0.8).toInt()
+        coin3!!.y = screenY - (sword.height * 3.8).toInt()   // Adjust the y-coordinate as needed
+        coin4!!.x = background2.x + (screenX *1.5).toInt()
+        coin4!!.y = screenY - (sword.height * 2.6).toInt()   // Adjust the y-coordinate as needed
+
 
         for (barrier in listOf(barrier1, barrier2, barrier3, barrier4)) {
             if (Rect.intersects(barrier!!.getCollisionShape(), sword.getCollisionShape())) {
-                val barrierTop = barrier.getCollisionShape().top
-                val barrierBottom = barrier.getCollisionShape().bottom
-                val barrierLeft = barrier.getCollisionShape().left
-                val barrierRight = barrier.getCollisionShape().right
-                val swordTop = sword.getCollisionShape().top
-                val swordBottom = sword.getCollisionShape().bottom
-                val swordLeft = sword.getCollisionShape().left
-                val swordRight = sword.getCollisionShape().right
+                val barrierRect = barrier.getCollisionShape()
+                val swordRect = sword.getCollisionShape()
 
-                // Check if sword is above the barrier and not overlapping horizontally
-                if (swordBottom >= barrierTop && swordTop <= barrierTop && swordLeft >= barrierLeft - 20) {
-                    // Sword is on top of the barrier, allow it to walk
-                    sword.y = barrierTop - sword.height + 20
+                // Calculate the collision points
+                val swordRight = swordRect.right
+                val swordTop = swordRect.top
+                val swordBottom = swordRect.bottom
+                val swordLeft = swordRect.left
+
+                // Calculate the center point of the barrier's top edge
+                val barrierTopCenterX = (barrierRect.left + barrierRect.right) / 2
+                val barrierTopCenterY = barrierRect.top
+
+                // Check if the sword is on top of the barrier's center
+                val isOnBarrierCenter = swordTop <= barrierTopCenterY + 20
+                        && swordRight >= barrierTopCenterX - sword.width
+
+
+                if (isOnBarrierCenter) {
+                    // Sword is on top of the barrier's center, allow it to walk
+                    sword.y = barrierRect.top - sword.height + 20
                 } else {
-                    // Sword is colliding with the left or right part of the barrier, prevent movement
-                    sword.isForward = false
+                    // Sword is colliding with other parts of the barrier, prevent movement
+                    println("Game Over")
+                    isGameOver = true
+                    return
                 }
             }
         }
 
+
+
+
+
         val coinsToRemove = ArrayList<Coin>()
 
         for (coin in coins) {
-            val coinRect = coin.getCollisionShape()
-
-            if (Rect.intersects(coinRect, swordRect)) {
-                // Collision detected, add the coin to the list for removal
+            if (Rect.intersects(sword.getCollisionShape(), coin.getCollisionShape())) {
                 coinsToRemove.add(coin)
             }
         }
+
         coins.removeAll(coinsToRemove)
+
+//        var collidedBarrier: Barrier? = null
+//        var collidedCoin: Coin? = null
+//        val coinsToRemove = ArrayList<Coin>()
+//
+//
+//
+//        for (barrier in listOf(barrier1, barrier2, barrier3, barrier4)) {
+//            for (coin in coins) { // Iterate through coins associated with the barrier
+//                val coinRect = coin.getCollisionShape(barrier!!.x, barrier.y)
+//                val swordRect = sword.getCollisionShape()
+//
+//                if (Rect.intersects(swordRect, coinRect)) {
+//                    // Collision detected, set the collided barrier and coin
+//                    collidedBarrier = barrier
+//                    collidedCoin = coin
+//                    println("colliding")
+//
+//                    // Break out of the loop to remove only one coin
+//                    break
+//                }
+//            }
+//
+//            // Check if a collision has been detected, and remove only one coin
+//            if (collidedBarrier != null && collidedCoin != null) {
+//                collidedBarrier.coins.remove(collidedCoin) // Remove the coin from the barrier
+//                coins.remove(collidedCoin) // Remove the coin from the global list
+//
+//                // Reset the collidedBarrier and collidedCoin for the next iteration
+//                collidedBarrier = null
+//                collidedCoin = null
+//            }
+//        }
+
 
 //        if (sword.isForward && !swordOnBarrier) {
 //            // Move the sword forward if it's not on a barrier
@@ -190,6 +264,11 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
     private fun draw() {
         if (holder.surface.isValid) {
             val canvas = holder.lockCanvas()
+            if(isGameOver){
+                isPlaying = false
+                holder.unlockCanvasAndPost(canvas)
+                return
+            }
             canvas.drawBitmap(
                 background1.background,
                 null,
@@ -248,13 +327,56 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
 //                waitBeforeExiting()
 //                return
 //            }
+
+//            for (coin in coins) {
+//                canvas.drawBitmap(coin.coin, coin.x.toFloat(), coin.y.toFloat(), paint)
+//            }
+//            for (barrier in listOf(barrier1, barrier2, barrier3, barrier4)) {
+//                val coinX = barrier!!.x + (barrier.width / 2) - (coin.width / 2)
+//                val coinY = barrier.y - coin.height -40 // Place the coin just above the barrier
+////                canvas.drawBitmap(coin.coin, coinX.toFloat(), coinY.toFloat(), paint)
+//                for (coin in coins) {
+//                    canvas.drawBitmap(coin.coin, coinX.toFloat(), coinY.toFloat(), paint)
+//                }
+//            }
+            if (coins.size < 4) {
+                coins.add(coin1!!)
+                coins.add(coin2!!)
+                coins.add(coin3!!)
+                coins.add(coin4!!)
+            }
+            for (coin in coins) {
+                canvas.drawBitmap(coin.coin, coin.x.toFloat(), coin.y.toFloat(), paint)
+            }
+//            canvas.drawBitmap(
+//                coin1!!.coin,
+//                coin1!!.x.toFloat(),
+//                coin1!!.y.toFloat(),
+//                paint
+//            )
+//            canvas.drawBitmap(
+//                coin2!!.coin,
+//                coin2!!.x.toFloat(),
+//                coin2!!.y.toFloat(),
+//                paint
+//            )
+//            canvas.drawBitmap(
+//               coin3!!.coin,
+//               coin3!!.x.toFloat(),
+//               coin3!!.y.toFloat(),
+//                paint
+//            )
+//            canvas.drawBitmap(
+//                coin4!!.coin,
+//                coin4!!.x.toFloat(),
+//                coin4!!.y.toFloat(),
+//                paint
+//            )
             canvas.drawBitmap(sword.sword, sword.x.toFloat(), sword.y.toFloat(), paint)
             // Draw the coin for each barrier
-            for (barrier in listOf(barrier1, barrier2, barrier3, barrier4)) {
-                val coinX = barrier!!.x + (barrier.width / 2) - (coin.width / 2)
-                val coinY = barrier.y - coin.height // Place the coin just above the barrier
-                canvas.drawBitmap(coin.coin, coinX.toFloat(), coinY.toFloat(), paint)
-            }
+
+
+
 //            for (bullet in bullets) {
 //                canvas.drawBitmap(bullet.bullet, bullet.x, bullet.y, paint)
 //            }

@@ -9,13 +9,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/mainpage" />
+        android:src="@drawable/mainpage"/>
 
     <TextView
-        android:layout_width="157dp"
-        android:layout_height="53dp"
-        android:layout_marginStart="180dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_gravity="end"
+        android:layout_marginEnd="30dp"
         android:lineHeight="55.73px"
         android:text="@string/settings"
         android:textFontWeight="400"
@@ -27,11 +28,12 @@
 
     <TextView
         android:id="@+id/gameText"
-        android:layout_width="210dp"
-        android:layout_height="93dp"
-        android:layout_marginStart="141dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="150dp"
-        android:lineHeight="111.46px"
+        android:layout_marginEnd="10dp"
+        android:lineHeight="111.46dp"
+        android:layout_gravity="end"
         android:shadowColor="#286779"
         android:shadowDx="0"
         android:shadowDy="10"

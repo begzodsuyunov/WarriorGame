@@ -14,6 +14,7 @@ class Barrier(private val xPosition: Int, screenY: Int, res: Resources) {
     var width: Int = 0
     var height: Int = 0
     var barrierBitmap: Bitmap
+    val coins = ArrayList<Coin>()
 
     init {
         barrierBitmap = BitmapFactory.decodeResource(res, R.drawable.barrier)
