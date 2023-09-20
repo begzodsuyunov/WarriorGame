@@ -7,8 +7,11 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.os.Handler
+import android.os.Vibrator
 import android.view.MotionEvent
 import android.view.SurfaceView
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.res.ResourcesCompat
 
 class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(context), Runnable {
     private var isPlaying: Boolean = false
@@ -41,6 +44,7 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
     private var lastRemovedCoin: Coin? = null
     private val coinsToAdd = ArrayList<Coin>()
     private var nextCoinToAdd: Coin? = null
+    private var vibrator: Vibrator? = null // Add a Vibrator instance
 
 
     private val coins = ArrayList<Coin>()
@@ -93,6 +97,7 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
 ////        coin.y = barrier2!!.y - coin.height - 20 // Place the coin just above barrier2
 //        coins.add(coin)
         paint = Paint()
+        vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
     }
 
@@ -268,6 +273,7 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
             if (isGameOver) {
                 isPlaying = false
                 exitingGame()
+                vibrator?.vibrate(500)
                 holder.unlockCanvasAndPost(canvas)
                 return
             }
@@ -365,7 +371,7 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
             )
 // Create a custom Paint object for the score text
             val scorePaint = Paint()
-            scorePaint.typeface = Typeface.create("Germania One", Typeface.NORMAL)
+            scorePaint.typeface = ResourcesCompat.getFont(this.context, R.font.germania_one_regular)
             scorePaint.textSize = 48f * resources.displayMetrics.density
             scorePaint.color = Color.WHITE
             scorePaint.textAlign = Paint.Align.CENTER

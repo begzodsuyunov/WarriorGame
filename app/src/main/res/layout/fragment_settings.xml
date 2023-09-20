@@ -1,14 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.SettingsFragment">
+    tools:context=".fragments.GameOverFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:scaleType="centerCrop"
+        android:src="@drawable/settingpage"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</FrameLayout>
+    <ImageView
+        android:id="@+id/soundImg"
+        android:layout_width="240dp"
+        android:layout_height="114dp"
+        android:layout_marginStart="15dp"
+        android:src="@drawable/settingstext"
+        app:layout_constraintBottom_toTopOf="@+id/vibrationImg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <ImageView
+        android:id="@+id/vibrationImg"
+        android:layout_width="240dp"
+        android:layout_height="114dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="40dp"
+        android:src="@drawable/settingstext"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/soundImg"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <TextView
+        android:id="@+id/soundImgText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineHeight="74dp"
+        android:text="@string/sound"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textFontWeight="400"
+        android:textSize="64sp"
+        app:layout_constraintBottom_toBottomOf="@id/soundImg"
+        app:layout_constraintEnd_toEndOf="@id/soundImg"
+        app:layout_constraintStart_toStartOf="@id/soundImg"
+        app:layout_constraintTop_toTopOf="@id/soundImg" />
+
+    <TextView
+        android:id="@+id/vibrationImgText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="34dp"
+        android:layout_marginEnd="8dp"
+        android:lineHeight="58dp"
+        android:text="@string/vibration"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textFontWeight="400"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toBottomOf="@+id/vibrationImg"
+        app:layout_constraintStart_toEndOf="@+id/vibrationImg"
+        app:layout_constraintStart_toStartOf="@id/soundImg"
+        app:layout_constraintTop_toTopOf="@+id/vibrationImg" />
+
+    <ImageView
+        android:id="@+id/soundStatus"
+        android:layout_width="240dp"
+        android:layout_height="114dp"
+        android:src="@drawable/tickbutton"
+        android:clickable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/soundImg"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <ImageView
+        android:id="@+id/vibrationStatus"
+        android:layout_width="240dp"
+        android:layout_height="114dp"
+        android:layout_marginBottom="40dp"
+        android:clickable="true"
+        android:src="@drawable/tickbutton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/vibrationImg"
+        app:layout_constraintVertical_bias="0.5" />
+    <ImageView
+        android:id="@+id/backButtonToMenu"
+        android:layout_width="58dp"
+        android:layout_height="62dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:src="@drawable/backtomanubutton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

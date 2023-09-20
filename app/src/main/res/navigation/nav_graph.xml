@@ -25,14 +25,17 @@
         <action
             android:id="@+id/action_gameFragment_to_gameOverFragment"
             app:destination="@id/gameOverFragment"
-            app:popUpTo="@id/fragment_main"
-            app:popUpToInclusive="true" />
+            app:popUpTo="@id/fragment_main" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.estgame.warriorroad.fragments.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_fragment_main"
+            app:destination="@id/fragment_main" />
+    </fragment>
     <fragment
         android:id="@+id/gameOverFragment"
         android:name="com.estgame.warriorroad.fragments.GameOverFragment"
