@@ -24,9 +24,15 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val gameText = view.findViewById<TextView>(R.id.gameText)
+        val settingText = view.findViewById<TextView>(R.id.settingsText)
         gameText.setOnClickListener {
             // Navigate to the new fragment when "game" text is clicked
             findNavController().navigate(R.id.action_fragment_main_to_gameFragment)
         }
+        settingText.setOnClickListener {
+            // Navigate to the new fragment when "game" text is clicked
+            findNavController().navigate(R.id.action_fragment_main_to_settingsFragment)
+        }
+
     }
 }

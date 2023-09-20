@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.GameOverFragment">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/settingpage"
+        android:scaleType="centerCrop"/>
+    <ImageView
+        android:id="@+id/backButtonToMenu"
+        android:layout_width="58dp"
+        android:layout_height="62dp"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="start"
+        android:layout_marginStart="10dp"
+        android:src="@drawable/backtomanubutton"/>
+    <ImageView
+        android:layout_width="256dp"
+        android:layout_height="268dp"
+        android:layout_gravity="center"
+        android:src="@drawable/backscoremain"/>
+    <TextView
+        android:id="@+id/gameOverScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineHeight="55.73dp"
+        android:shadowColor="#286779"
+        android:shadowDx="0"
+        android:shadowDy="10"
+        android:shadowRadius="1"
+        android:layout_gravity="center"
+        android:text="25"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textFontWeight="400"
+        android:textSize="128sp" />
+
+
+</FrameLayout>

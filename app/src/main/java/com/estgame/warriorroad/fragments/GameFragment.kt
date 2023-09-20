@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.WindowManager.LayoutParams
+import androidx.navigation.fragment.findNavController
 import com.estgame.warriorroad.GameView
 import com.estgame.warriorroad.R
 
@@ -27,11 +28,13 @@ class GameFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val windowManager = requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val windowManager =
+            requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val point = Point()
         windowManager.defaultDisplay.getSize(point)
 
         gameView = GameView(requireContext(), point.x, point.y)
+
 
         val layoutParams = LayoutParams()
         layoutParams.width = LayoutParams.MATCH_PARENT
@@ -39,11 +42,21 @@ class GameFragment : Fragment() {
 
         (view as ViewGroup).addView(gameView, layoutParams)
 
+        gameView.setGameOverListener(object : GameView.GameOverListener {
+            override fun onGameOver(score: Int) {
+                val action = GameFragmentDirections.actionGameFragmentToGameOverFragment(score)
+                requireActivity().runOnUiThread {
+                    findNavController().navigate(action)
+                }
+            }
+        })
     }
 
     override fun onPause() {
         super.onPause()
         gameView.pause()
+//        val action = GameFragmentDirections.actionGameFragmentToGameOverFragment()
+//        findNavController().navigate(action)
 
     }
 

@@ -2,25 +2,13 @@ package com.estgame.warriorroad
 
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.Typeface
-import android.media.AudioAttributes
-import android.media.AudioManager
-import android.media.SoundPool
-import android.os.Build
 import android.os.Handler
-import android.provider.SyncStateContract.Helpers.update
-import android.telephony.BarringInfo
-import android.util.Half.toFloat
 import android.view.MotionEvent
-import android.view.SurfaceHolder
 import android.view.SurfaceView
-import android.widget.Toast
-import java.util.Random
 
 class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(context), Runnable {
     private var isPlaying: Boolean = false
@@ -34,7 +22,8 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
     private var sword: Sword
     private var score: Score
     private var scoreText: Int = 0
-//    private var coin: Coin
+
+    //    private var coin: Coin
 
 
     //    private var barrier: Barrier? = null
@@ -57,12 +46,14 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
     private val coins = ArrayList<Coin>()
     private var lastCoinAdditionTime: Long = 0
     private val coinAdditionInterval = 4000L // Delay for 3000 milliseconds (3 seconds)
+    private var gameOverListener: GameOverListener? = null
 
     companion object {
         var screenRatioY: Float? = null
         var screenRatioX: Float? = null
 
     }
+
 
     init {
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -103,22 +94,10 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
 //        coins.add(coin)
         paint = Paint()
 
+    }
 
-//        for (barrier in listOf(barrier1, barrier2, barrier3, barrier4)) {
-//            val coinX = barrier!!.x + (barrier.width / 2) - (coin.width / 2)
-//            val coinY = barrier.y - coin.height - 40 // Place the coin just above the barrier
-//            val newCoin = Coin(resources)
-//            newCoin.x = coinX
-//            newCoin.y = coinY
-//            coins.add(newCoin)
-//        }
-
-//        paint.textSize = 128f
-//        paint.color = Color.WHITE
-//        birds = Array(4) { Bird(resources) }
-//        for (i in birds.indices) {
-//            birds[i] = Bird(resources)
-//        }
+    interface GameOverListener {
+        fun onGameOver(score: Int)
     }
 
     override fun run() {
@@ -288,6 +267,7 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
             val canvas = holder.lockCanvas()
             if (isGameOver) {
                 isPlaying = false
+                exitingGame()
                 holder.unlockCanvasAndPost(canvas)
                 return
             }
@@ -440,17 +420,27 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
 
     }
 
-    fun convertDpToPx(dp: Int): Int {
+    private fun convertDpToPx(dp: Int): Int {
         val density = Resources.getSystem().displayMetrics.density
         return (dp * density).toInt()
+    }
+
+    fun setGameOverListener(listener: GameOverListener) {
+        gameOverListener = listener
     }
 
     private fun sleep() {
         try {
             Thread.sleep(17)
-
         } catch (e: Error) {
             println(e)
+        }
+    }
+    private fun exitingGame(){
+        try {
+            gameOverListener?.onGameOver(scoreText)
+        } catch (e: InterruptedException){
+            e.printStackTrace()
         }
     }
 
