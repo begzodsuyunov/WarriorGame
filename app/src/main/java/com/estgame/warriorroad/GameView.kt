@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.Typeface
+import android.os.Build
 import android.os.Handler
 import android.os.Vibrator
 import android.view.MotionEvent
@@ -44,8 +45,12 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
     private var lastRemovedCoin: Coin? = null
     private val coinsToAdd = ArrayList<Coin>()
     private var nextCoinToAdd: Coin? = null
-    private var vibrator: Vibrator? = null // Add a Vibrator instance
-
+    private val vibrator: Vibrator? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    } else {
+        null
+    }
+    private var vibrationOn: Boolean = true // Default state is vibration on
 
     private val coins = ArrayList<Coin>()
     private var lastCoinAdditionTime: Long = 0
@@ -97,7 +102,6 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
 ////        coin.y = barrier2!!.y - coin.height - 20 // Place the coin just above barrier2
 //        coins.add(coin)
         paint = Paint()
-        vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
     }
 
@@ -273,7 +277,6 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
             if (isGameOver) {
                 isPlaying = false
                 exitingGame()
-                vibrator?.vibrate(500)
                 holder.unlockCanvasAndPost(canvas)
                 return
             }
@@ -445,11 +448,21 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
     private fun exitingGame(){
         try {
             gameOverListener?.onGameOver(scoreText)
+            // Check if vibration is enabled in SharedPreferences
+            val vibrationEnabled = isVibrationEnabled()
+
+            if (vibrationEnabled) {
+                // Vibrate for 500 milliseconds if vibration is enabled
+                vibrator?.vibrate(500)
+            }
         } catch (e: InterruptedException){
             e.printStackTrace()
         }
     }
-
+    private fun isVibrationEnabled(): Boolean {
+        val sharedPrefs = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPrefs.getBoolean("vibration_enabled", true) // Default to true if the preference doesn't exist
+    }
     fun resume() {
         try {
             isPlaying = true

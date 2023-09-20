@@ -16,9 +16,11 @@ class SettingsFragment : Fragment() {
     private var imageView: ImageView? = null
     private var musicOn: Boolean = true // Default state is music on
     private var musicImageView: ImageView? = null
+    private var vibratorImageView: ImageView? = null
     private var mediaPlayer: MediaPlayer? = null // MediaPlayer instance
     private lateinit var mainActivity: MainActivity
     private val MUSIC_STATE_KEY = "music_state_key" // Key for storing music state in SharedPreferences
+    private var vibrationOn: Boolean = true // Default state is vibration on
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -43,9 +45,13 @@ class SettingsFragment : Fragment() {
         mediaPlayer = mainActivity.getMediaPlayer()
 
         musicImageView = view.findViewById(R.id.soundStatus)
+        vibratorImageView = view.findViewById(R.id.vibrationStatus)
 
         // Set the initial music state based on SharedPreferences
         musicOn = isMusicOn()
+        vibrationOn = isVibrationEnabled()
+        updateVibrationImageView()
+
         updateMusicImageView()
 
         imageView!!.setOnClickListener {
@@ -57,8 +63,46 @@ class SettingsFragment : Fragment() {
         musicImageView?.setOnClickListener {
             toggleMusicState()
         }
+        vibratorImageView?.setOnClickListener {
+            // Toggle the vibration setting
+            vibrationOn = !vibrationOn
 
+            // Save the vibration setting to SharedPreferences
+            saveVibrationSetting(vibrationOn)
 
+            // Update the ImageView to reflect the new state
+            updateVibrationImageView()
+
+            // Perform any necessary actions for enabling or disabling vibration
+            if (vibrationOn) {
+                // Vibration is enabled
+            } else {
+                // Vibration is disabled
+            }
+        }
+
+    }
+
+    private fun isVibrationEnabled(): Boolean {
+        val sharedPrefs = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPrefs.getBoolean("vibration_enabled", true) // Default to true if the preference doesn't exist
+    }
+
+    private fun saveVibrationSetting(enabled: Boolean) {
+        val sharedPrefs = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPrefs.edit()
+        editor.putBoolean("vibration_enabled", enabled)
+        editor.apply()
+    }
+
+    private fun updateVibrationImageView() {
+        if (vibrationOn) {
+            // Vibration is enabled, set the ImageView to "vibration_on"
+            vibratorImageView?.setImageResource(R.drawable.tickbutton)
+        } else {
+            // Vibration is disabled, set the ImageView to "vibration_off"
+            vibratorImageView?.setImageResource(R.drawable.disablebutton)
+        }
     }
     private fun isMusicOn(): Boolean {
         val sharedPrefs = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
