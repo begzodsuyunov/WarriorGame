@@ -55,9 +55,6 @@ class GameFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         gameView.pause()
-//        val action = GameFragmentDirections.actionGameFragmentToGameOverFragment()
-//        findNavController().navigate(action)
-
     }
 
     override fun onResume() {

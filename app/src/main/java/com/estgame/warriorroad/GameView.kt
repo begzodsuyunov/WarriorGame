@@ -27,10 +27,6 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
     private var score: Score
     private var scoreText: Int = 0
 
-    //    private var coin: Coin
-
-
-    //    private var barrier: Barrier? = null
     private val barriers = ArrayList<Barrier>()
     private var barrier1: Barrier? = null
     private var barrier2: Barrier? = null
@@ -41,16 +37,13 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
     private var coin2: Coin? = null
     private var coin3: Coin? = null
     private var coin4: Coin? = null
-    private val coinAddHandler = Handler()
     private var lastRemovedCoin: Coin? = null
-    private val coinsToAdd = ArrayList<Coin>()
     private var nextCoinToAdd: Coin? = null
     private val vibrator: Vibrator? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     } else {
         null
     }
-    private var vibrationOn: Boolean = true // Default state is vibration on
 
     private val coins = ArrayList<Coin>()
     private var lastCoinAdditionTime: Long = 0
@@ -63,20 +56,7 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
 
     }
 
-
     init {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            val audioAttributes = AudioAttributes.Builder()
-//                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-//                .setUsage(AudioAttributes.USAGE_GAME)
-//                .build()
-//            soundPool = SoundPool.Builder()
-//                .setAudioAttributes(audioAttributes)
-//                .build()
-//        } else {
-//            soundPool = SoundPool(1, AudioManager.STREAM_MUSIC, 0)
-//        }
-//        sound = soundPool.load(activity, R.raw.shoot, 1)
         screenRatioX = 1920f / screenX
         screenRatioY = 1080f / screenY
         background2.x = screenX * 2 // Set the initial x position of background2
@@ -97,10 +77,7 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
         coins.add(coin2!!)
         coins.add(coin3!!)
         coins.add(coin4!!)
-//        coin = Coin(resources)
-////        coin.x = (screenX / 2 - coin.width / 2) // Center the coin horizontally
-////        coin.y = barrier2!!.y - coin.height - 20 // Place the coin just above barrier2
-//        coins.add(coin)
+
         paint = Paint()
 
     }
@@ -217,52 +194,6 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
             coins.add(nextCoinToAdd!!)
             nextCoinToAdd = null
         }
-//        var collidedBarrier: Barrier? = null
-//        var collidedCoin: Coin? = null
-//        val coinsToRemove = ArrayList<Coin>()
-//
-//
-//
-//        for (barrier in listOf(barrier1, barrier2, barrier3, barrier4)) {
-//            for (coin in coins) { // Iterate through coins associated with the barrier
-//                val coinRect = coin.getCollisionShape(barrier!!.x, barrier.y)
-//                val swordRect = sword.getCollisionShape()
-//
-//                if (Rect.intersects(swordRect, coinRect)) {
-//                    // Collision detected, set the collided barrier and coin
-//                    collidedBarrier = barrier
-//                    collidedCoin = coin
-//                    println("colliding")
-//
-//                    // Break out of the loop to remove only one coin
-//                    break
-//                }
-//            }
-//
-//            // Check if a collision has been detected, and remove only one coin
-//            if (collidedBarrier != null && collidedCoin != null) {
-//                collidedBarrier.coins.remove(collidedCoin) // Remove the coin from the barrier
-//                coins.remove(collidedCoin) // Remove the coin from the global list
-//
-//                // Reset the collidedBarrier and collidedCoin for the next iteration
-//                collidedBarrier = null
-//                collidedCoin = null
-//            }
-//        }
-
-
-//        if (sword.isForward && !swordOnBarrier) {
-//            // Move the sword forward if it's not on a barrier
-//            background1.x -= (15 * screenRatioX!!).toInt()
-//            background2.x -= (15 * screenRatioX!!).toInt()
-//            sword.x += (2 * screenRatioX!!).toInt() // You can adjust the sword's forward speed as needed
-//        }
-
-//        if (sword.isJump) {
-//            sword.y -= (23 * screenRatioY!!).toInt()
-//        } else {
-//            sword.y += (10 * screenRatioY!!).toInt()
-//        }
 
         if (sword.x < 0)
             sword.x = 0
@@ -326,38 +257,6 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
                 barrier4!!.y.toFloat(),
                 paint
             )
-//            for (bird in birds) {
-//                canvas.drawBitmap(bird.getBird(), bird.x, bird.y, paint)
-//            }
-//            canvas.drawText(score.toString(), (screenX / 2).toFloat(), 164f, paint)
-//            if (isGameOver) {
-//                isPlaying = false
-//                canvas.drawBitmap(flight.getDead(), flight.x, flight.y, paint)
-//                holder.unlockCanvasAndPost(canvas)
-//                saveIfHighScore()
-//                waitBeforeExiting()
-//                return
-//            }
-
-//            for (coin in coins) {
-//                canvas.drawBitmap(coin.coin, coin.x.toFloat(), coin.y.toFloat(), paint)
-//            }
-//            for (barrier in listOf(barrier1, barrier2, barrier3, barrier4)) {
-//                val coinX = barrier!!.x + (barrier.width / 2) - (coin.width / 2)
-//                val coinY = barrier.y - coin.height -40 // Place the coin just above the barrier
-////                canvas.drawBitmap(coin.coin, coinX.toFloat(), coinY.toFloat(), paint)
-//                for (coin in coins) {
-//                    canvas.drawBitmap(coin.coin, coinX.toFloat(), coinY.toFloat(), paint)
-//                }
-//            }
-//            if (coins.isEmpty()) {
-//                coinAddHandler.postDelayed({
-//                    coins.add(coin1!!)
-//                    coins.add(coin2!!)
-//                    coins.add(coin3!!)
-//                    coins.add(coin4!!)
-//                }, 3000) // Delay for 1000 milliseconds (1 second)
-//            }
             for (coin in coins) {
                 canvas.drawBitmap(coin.coin, coin.x.toFloat(), coin.y.toFloat(), paint)
             }
@@ -392,38 +291,7 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
                 textY + (score.scoreBitmap.height / 2),
                 scorePaint
             )
-
-            //            canvas.drawBitmap(
-//                coin1!!.coin,
-//                coin1!!.x.toFloat(),
-//                coin1!!.y.toFloat(),
-//                paint
-//            )
-//            canvas.drawBitmap(
-//                coin2!!.coin,
-//                coin2!!.x.toFloat(),
-//                coin2!!.y.toFloat(),
-//                paint
-//            )
-//            canvas.drawBitmap(
-//               coin3!!.coin,
-//               coin3!!.x.toFloat(),
-//               coin3!!.y.toFloat(),
-//                paint
-//            )
-//            canvas.drawBitmap(
-//                coin4!!.coin,
-//                coin4!!.x.toFloat(),
-//                coin4!!.y.toFloat(),
-//                paint
-//            )
             canvas.drawBitmap(sword.sword, sword.x.toFloat(), sword.y.toFloat(), paint)
-            // Draw the coin for each barrier
-
-
-//            for (bullet in bullets) {
-//                canvas.drawBitmap(bullet.bullet, bullet.x, bullet.y, paint)
-//            }
             holder.unlockCanvasAndPost(canvas)
         }
 
@@ -471,8 +339,6 @@ class GameView(context: Context, screenX: Int, screenY: Int) : SurfaceView(conte
         } catch (e: Error) {
             println(e)
         }
-
-
     }
 
     fun pause() {

@@ -53,8 +53,6 @@ class MainActivity : AppCompatActivity() {
         // Save the music state to SharedPreferences
         saveMusicState(isMusicOn)
 
-        // Update the UI based on the music state
-        // You can implement this logic if needed
     }
     private fun saveMusicState(musicOn: Boolean) {
         val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
